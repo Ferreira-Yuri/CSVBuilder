@@ -1,7 +1,7 @@
 from tkinter import Tk, filedialog
 import os
 
-input_dir = "/home/bigode/Abastecimento/01_Matriz"
+input_dir = "Z:\Yuri Winthor\Abastecimentos\Orçamentos_Abastecimento"
 
 def select_file():
     Tk().withdraw()  # esconde a janela principal do Tkinter

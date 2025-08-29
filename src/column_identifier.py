@@ -4,7 +4,8 @@ def read_file(file):
     """
     Lê o arquivo Excel sem cabeçalho.
     """
-    df = pd.read_excel(file, header=None)  # sem cabeçalho
+    df = pd.read_excel(file, header=None)  # sem engine
+
     print("Planilha carregada, total de linhas:", len(df))
     return df
 

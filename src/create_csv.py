@@ -2,7 +2,7 @@ from pathlib import Path
 from store_table import store_table
 
 # Pasta base onde vão ser salvos os arquivos
-base_path_save = Path('/home/bigode/Documentos/projetos/CSVBuilder/dados/output')
+base_path_save = Path('Z:\Yuri Winthor\Abastecimentos\Pedidos_Separados')
 
 # Seleciona a filial do pedido a ser segmentado
 def select_store():
@@ -34,7 +34,7 @@ def csv_order(df, name_store, num_store):
         df_segment = df.iloc[i * 30:(i + 1) * 30]
 
         # Nome do arquivo de saída
-        name_file = f"abastecimento_{name_store}_{i+1}.csv"
+        name_file = f"20250829_{name_store}_{i+1}.csv"
         file_path = path_save / name_file
 
         # Salva sem cabeçalho e separado por ";"
