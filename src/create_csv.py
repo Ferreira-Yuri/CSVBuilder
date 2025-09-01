@@ -1,30 +1,35 @@
 from pathlib import Path
 from store_table import store_table
+from datetime import date
 
 # Pasta base onde vão ser salvos os arquivos
-base_path_save = Path('Z:\Yuri Winthor\Abastecimentos\Pedidos_Separados')
+base_path_save = Path(r'Z:\Yuri Winthor\Abastecimentos\Pedidos_Separados')
 
-# Seleciona a filial do pedido a ser segmentado
 def select_store():
+    print("Filiais disponíveis:")
+    for num, nome in store_table.items():
+        print(f"{num} - {nome}")
+
     while True:
         try:
-            num_store = int(input("Digite o número da filial do seu pedido: "))
+            num_store = int(input("\nDigite o número da filial do seu pedido: "))
             if num_store in store_table:
-                name_store = store_table[num_store]
-                return num_store, name_store
+                return num_store, store_table[num_store]
             else: 
                 print("Número da filial inválido. Tente novamente.")
         except ValueError:
             print("Digite um número válido!")
+
+def get_today_string():
+    return date.today().strftime("%Y%m%d")  # formato AAAAMMDD
 
 # Criação dos arquivos segmentados em CSV
 def csv_order(df, name_store, num_store):
     # Insere a coluna da filial no início
     df.insert(0, "Filial", num_store)
 
-    # Garante que existe uma pasta específica para a filial
-    path_save = base_path_save / f"{num_store:02}_{name_store}"
-    path_save.mkdir(parents=True, exist_ok=True)
+    # Data de hoje no formato AAAAMMDD
+    today = get_today_string()
 
     # Calcula quantos arquivos vão ser gerados
     num_files = (len(df) // 30) + (1 if len(df) % 30 > 0 else 0)
@@ -33,10 +38,11 @@ def csv_order(df, name_store, num_store):
     for i in range(num_files):
         df_segment = df.iloc[i * 30:(i + 1) * 30]
 
-        # Nome do arquivo de saída
-        name_file = f"20250829_{name_store}_{i+1}.csv"
-        file_path = path_save / name_file
+        # Nome do arquivo de saída (vai tudo direto na pasta base)
+        name_file = f"{today}_F{num_store}_Sugestão_{i+1}.csv"
+        file_path = base_path_save / name_file
 
         # Salva sem cabeçalho e separado por ";"
         df_segment.to_csv(file_path, index=False, header=False, sep=";")
         print(f"Arquivo salvo: {file_path}")
+
