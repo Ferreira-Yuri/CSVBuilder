@@ -23,26 +23,32 @@ def select_store():
 def get_today_string():
     return date.today().strftime("%Y%m%d")  # formato AAAAMMDD
 
-# Criação dos arquivos segmentados em CSV
-def csv_order(df, name_store, num_store):
-    # Insere a coluna da filial no início
-    df.insert(0, "Filial", num_store)
+# Criação dos arquivos segmentados em CSV (FUNÇÃO MODIFICADA)
+def csv_order(df, name_store, num_store, prefixo_arquivo=""):
+    # Se o dataframe estiver vazio, avisa e não faz nada
+    if df.empty:
+        print(f"\nNenhum item para processar no grupo '{prefixo_arquivo}'.")
+        return
 
-    # Data de hoje no formato AAAAMMDD
+    df_copy = df.copy()
+    df_copy.insert(0, "Filial", num_store)
+    
     today = get_today_string()
+    
+    num_files = (len(df_copy) // 30) + (1 if len(df_copy) % 30 > 0 else 0)
 
-    # Calcula quantos arquivos vão ser gerados
-    num_files = (len(df) // 30) + (1 if len(df) % 30 > 0 else 0)
+    print(f"\nGerando {num_files} arquivo(s) para o grupo '{prefixo_arquivo}'...")
 
-    # Divide em blocos de 30 linhas
     for i in range(num_files):
-        df_segment = df.iloc[i * 30:(i + 1) * 30]
+        df_segment = df_copy.iloc[i * 30:(i + 1) * 30]
 
-        # Nome do arquivo de saída (vai tudo direto na pasta base)
-        name_file = f"{today}_F{num_store}_Sugestão_{i+1}.csv"
+        # Adiciona o prefixo no nome do arquivo, se ele existir
+        if prefixo_arquivo:
+            name_file = f"{today}_F{num_store}_{prefixo_arquivo}_Sugestão_{i+1}.csv"
+        else:
+            name_file = f"{today}_F{num_store}_Sugestão_{i+1}.csv"
+        
         file_path = base_path_save / name_file
 
-        # Salva sem cabeçalho e separado por ";"
         df_segment.to_csv(file_path, index=False, header=False, sep=";")
         print(f"Arquivo salvo: {file_path}")
-

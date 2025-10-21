@@ -8,6 +8,6 @@ def select_file():
     file_path = filedialog.askopenfilename(
         initialdir=input_dir,       # abre direto na pasta padrão
         title="Selecione o arquivo de pedidos",
-        filetypes=[("Arquivos Excel", "*.xls *.xlsx")]
+        filetypes=[("Arquivos Excel", "*.xls *.xlsx")] # Só funcionou o xlsx
     )
     return file_path
